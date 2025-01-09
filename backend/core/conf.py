@@ -49,7 +49,7 @@ class Settings(BaseSettings):
     FASTAPI_STATIC_FILES: bool = True
 
     # Database
-    DATABASE_ECHO: bool = False
+    DATABASE_ECHO: bool = True
     DATABASE_SCHEMA: str = 'fba'
     DATABASE_CHARSET: str = 'utf8mb4'
 

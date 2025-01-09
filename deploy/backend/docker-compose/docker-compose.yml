@@ -41,9 +41,9 @@ services:
         mkdir -p /var/log/supervisor/
         supervisord -c /fba/deploy/backend/supervisor.conf
         supervisorctl restart
-
+ # This mysql image will create db automatically if the fba_mysql volume is empty
   fba_mysql:
-    image: mysql:8.0.29
+    image: docker.m.daocloud.io/mysql:8.0.29
     ports:
       - "${DOCKER_MYSQL_MAP_PORT:-3306}:3306"
     container_name: fba_mysql
@@ -54,6 +54,7 @@ services:
       TZ: Asia/Shanghai
     volumes:
       - fba_mysql:/var/lib/mysql
+      - /root/projects/fastapi_best_architecture:/fba
     networks:
       - fba_network
     command:
@@ -78,7 +79,7 @@ services:
 #      - fba_network
 
   fba_redis:
-    image: redis:6.2.7
+    image: docker.m.daocloud.io/redis:6.2.7
     ports:
       - "${DOCKER_REDIS_MAP_PORT:-6379}:6379"
     container_name: fba_redis
@@ -91,7 +92,7 @@ services:
       - fba_network
 
   fba_nginx:
-    image: nginx
+    image: docker.m.daocloud.io/nginx
     ports:
       - "8000:80"
     container_name: fba_nginx
@@ -129,7 +130,7 @@ services:
 
   fba_rabbitmq:
     hostname: fba_rabbitmq
-    image: rabbitmq:3.12.7
+    image: docker.m.daocloud.io/rabbitmq:3.12.7
     ports:
       - "15672:15672"
       - "5672:5672"

@@ -124,3 +124,20 @@ This project is licensed by the terms of
 the [MIT](https://github.com/fastapi-practices/fastapi_best_architecture/blob/master/LICENSE) license
 
 [![Stargazers over time](https://starchart.cc/fastapi-practices/fastapi_best_architecture.svg?variant=adaptive)](https://starchart.cc/fastapi-practices/fastapi_best_architecture)
+
+# deploy
+Note: database will be created automatically by mysql container.
+```
+export PYTHONPATH=/root/projects/fastapi_best_architecture
+cd deploy/backend
+cp .env.server ../../../backend/.env
+docker-compose up -d --build
+
+
+docker exec -i -u root fba_mysql mysql -u root -p123456  -D fba --default-character-set=utf8mb4 < sql/mysql/create_tables.sql
+
+docker exec -i -u root fba_mysql mysql -u root -p123456  -D fba --default-character-set=utf8mb4 < sql/mysql/init_test_data.sql
+
+
+echo "fba"| xargs -I{} sh -c "mysql -u root -p123456  -h fba_mysql -Nse 'show tables' {}| xargs -I[] mysql -u root -p123456  -h fba_mysql  -e 'SET FOREIGN_KEY_CHECKS=0; drop table []' {}"
+```
